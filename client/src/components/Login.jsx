@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const Login = () => {   //Functional Component , using usestate we manage 3 states
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
