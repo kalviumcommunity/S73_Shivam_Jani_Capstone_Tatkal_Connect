@@ -39,6 +39,7 @@ const signup = async (req, res) => {
   }
 };
 
+// Get All Users Controller
 const getUsers = async (req, res) => {
   try {
     const users = await User.find({}, "-password"); // Excluding passwords for security
@@ -50,4 +51,28 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { signup, getUsers };
+// Update User Controller
+const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email } = req.body;
+
+    // Check if user exists
+    let user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user fields
+    user.name = name || user.name;
+    user.email = email || user.email;
+
+    await user.save();
+
+    res.status(200).json({ message: "User updated successfully", user });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+module.exports = { signup, getUsers, updateUser };
