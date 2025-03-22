@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -11,55 +11,76 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Signup Successful (Frontend only, No backend connected)");
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Signup Successful!");
+      } else {
+        alert(`Signup Failed: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.signupBox}>
+      <div style={styles.card}>
         <h2 style={styles.title}>Create an Account</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            style={styles.input}
-          />
-
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Full Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="John Doe"
+              value={formData.name}
+              onChange={handleChange}
+              style={styles.input}
+              required
+            />
+          </div>
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="johndoe@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              style={styles.input}
+              required
+            />
+          </div>
+          <div style={styles.inputGroup}>
+            <label style={styles.label}>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={handleChange}
+              style={styles.input}
+              required
+            />
+          </div>
           <button type="submit" style={styles.button}>
             Sign Up
           </button>
         </form>
-
-        <p style={styles.loginText}>
+        <p style={styles.footerText}>
           Already have an account?{" "}
-          <a href="#" style={styles.link}>
-            Login here
+          <a href="/login" style={styles.link}>
+            Login
           </a>
         </p>
       </div>
@@ -67,54 +88,69 @@ const Signup = () => {
   );
 };
 
-// Inline Styles
+// Inline CSS Styles
 const styles = {
   container: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "100vh",
-    background: "linear-gradient(135deg, #007bff, #6a11cb)",
-    margin: 0,
+    minHeight: "100vh",
+    background: "linear-gradient(to right, #6a11cb, #2575fc)",
   },
-  signupBox: {
-    background: "white",
+  card: {
+    background: "#fff",
     padding: "30px",
     borderRadius: "10px",
-    boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.2)",
-    textAlign: "center",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     width: "350px",
+    textAlign: "center",
   },
   title: {
-    marginBottom: "20px",
-    color: "#333",
     fontSize: "22px",
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: "20px",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  inputGroup: {
+    marginBottom: "15px",
+    textAlign: "left",
+  },
+  label: {
+    fontSize: "14px",
+    fontWeight: "bold",
+    color: "#555",
+    display: "block",
+    marginBottom: "5px",
   },
   input: {
     width: "100%",
-    padding: "12px",
-    marginBottom: "15px",
+    padding: "10px",
     border: "1px solid #ccc",
     borderRadius: "5px",
-    fontSize: "16px",
+    fontSize: "14px",
   },
   button: {
-    background: "#007bff",
-    color: "white",
-    border: "none",
-    padding: "12px",
     width: "100%",
+    padding: "10px",
+    background: "#2575fc",
+    color: "#fff",
+    border: "none",
     borderRadius: "5px",
-    cursor: "pointer",
     fontSize: "16px",
+    cursor: "pointer",
     transition: "0.3s",
   },
-  loginText: {
+  footerText: {
     marginTop: "15px",
-    color: "#333",
+    fontSize: "14px",
+    color: "#555",
   },
   link: {
-    color: "#007bff",
+    color: "#2575fc",
     textDecoration: "none",
     fontWeight: "bold",
   },
