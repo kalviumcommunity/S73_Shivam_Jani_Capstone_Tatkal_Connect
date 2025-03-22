@@ -30,17 +30,45 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// **New route to get all users**
+// Get all users
 router.get("/users", async (req, res) => {
-  //This defines a GET request at the endpoint /users.
   try {
-    const users = await User.find({}, "-password"); // Excluding password field // retrieves all documents (users) from the User collection in MongoDB.
-    res.status(200).json(users); // If the users are fetched successfully, we send a 200 (OK) response with the users' data in JSON format.
+    const users = await User.find({}, "-password"); // Excluding password field
+    res.status(200).json(users);
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ message: "Failed to fetch users", error: error.message }); // If an error occurs (e.g., database connection fails), we send a 500 (Internal Server Error) response.
+      .json({ message: "Failed to fetch users", error: error.message });
+  }
+});
+
+// Update user details
+router.put("/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params; // Extract user ID from URL
+    const { name, email, role } = req.body; // Extract updated fields from request body
+
+    // Check if user exists
+    let user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update only if new values are provided
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (role) user.role = role;
+
+    // Save updated user
+    await user.save();
+
+    res.status(200).json({ message: "User updated successfully", user });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Failed to update user", error: error.message });
   }
 });
 
