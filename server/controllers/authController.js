@@ -39,4 +39,15 @@ const signup = async (req, res) => {
   }
 };
 
-module.exports = { signup };
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, "-password"); // Excluding passwords for security
+    res.status(200).json(users);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Failed to fetch users", error: error.message });
+  }
+};
+
+module.exports = { signup, getUsers };
