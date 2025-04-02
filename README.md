@@ -49,7 +49,4 @@ The **high-fidelity UI design** was crafted using **Figma**, ensuring a **modern
 
 ---
 
-### **Backend Deployment Link** 
 
-- Link :- https://s73-shivam-jani-capstone-tatkal-connect-4.onrender.com/
-- Test Link for an endpoint :- https://s73-shivam-jani-capstone-tatkal-connect-4.onrender.com/api/auth/users
